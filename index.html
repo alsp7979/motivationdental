@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>치위생과 신입생 학습 동기 진단 테스트</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-btn {
+            background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+            transition: all 0.3s ease;
+        }
+        .gradient-btn:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.3);
+        }
+        .radio-option {
+            transition: all 0.2s ease;
+        }
+        .radio-option:hover {
+            border-color: #0d9488;
+            background-color: #f0fdf4;
+        }
+        .radio-option.selected {
+            border-color: #0d9488;
+            background-color: #ccfbf1;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased">
+
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-teal-500 text-white flex items-center justify-center font-bold text-xl shadow-md">
+                    <i class="fa-solid font-tooth fa-tooth"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-800 text-lg leading-tight">치위생과 학습 동기 진단</h1>
+                    <p class="text-xs text-slate-500">1학년 대학적응 & 동기부여 프로그램</p>
+                </div>
+            </div>
+            <div id="headerProgress" class="hidden text-right">
+                <span id="progressText" class="text-sm font-semibold text-teal-600">0%</span>
+                <div class="w-24 bg-slate-100 rounded-full h-2 mt-1 overflow-hidden">
+                    <div id="progressBar" class="bg-teal-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto w-full px-4 py-8 flex-grow">
+
+        <!-- INTRO SCREEN -->
+        <div id="introScreen" class="glass-card rounded-2xl p-6 sm:p-10 shadow-xl text-center">
+            <div class="inline-flex p-3 rounded-full bg-teal-50 text-teal-600 mb-4">
+                <i class="fa-solid fa-graduation-cap text-3xl"></i>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-3">
+                나의 <span class="gradient-text">학습 동기 유형</span>은 무엇일까?
+            </h2>
+            <p class="text-slate-600 mb-6 max-w-xl mx-auto leading-relaxed text-sm sm:text-base">
+                대학 생활, 전공 공부, 국가고시 및 실습 준비까지! <br class="hidden sm:inline">
+                현재 나의 학습 상태를 30가지 문항으로 점검하고 나에게 딱 맞는 <b>맞춤형 전공 공부 전략</b>을 찾아보세요.
+            </p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 max-w-2xl mx-auto mb-8 text-xs text-slate-600">
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                    <i class="fa-solid fa-heart text-rose-500 text-lg mb-1 block"></i>
+                    <span>내재적 동기</span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                    <i class="fa-solid fa-bullseye text-sky-500 text-lg mb-1 block"></i>
+                    <span>외재적 동기</span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                    <i class="fa-solid fa-bolt text-amber-500 text-lg mb-1 block"></i>
+                    <span>자기효능감</span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                    <i class="fa-solid fa-sliders text-emerald-500 text-lg mb-1 block"></i>
+                    <span>학습 전략</span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 col-span-2 sm:col-span-1">
+                    <i class="fa-solid fa-shield-halved text-indigo-500 text-lg mb-1 block"></i>
+                    <span>회복탄력성</span>
+                </div>
+            </div>
+
+            <div class="mb-8 max-w-md mx-auto text-left bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <label for="userName" class="block text-xs font-semibold text-slate-700 mb-1">학생 이름 (선택사항)</label>
+                <input type="text" id="userName" placeholder="이름을 입력하세요 (예: 홍길동)" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm">
+            </div>
+
+            <button onclick="startTest()" class="gradient-btn text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl text-base w-full sm:w-auto">
+                진단 테스트 시작하기 <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+
+        <!-- TEST QUESTION SCREEN -->
+        <div id="testScreen" class="hidden">
+            <div id="questionContainer" class="space-y-6">
+                <!-- Question cards generated via JS -->
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8 pt-6 border-t border-slate-200">
+                <button id="prevBtn" onclick="prevPage()" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-600 font-medium hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed text-sm">
+                    <i class="fa-solid fa-chevron-left mr-2"></i> 이전
+                </button>
+                <span id="pageIndicator" class="text-xs font-semibold text-slate-500">
+                    1 / 6 페이지
+                </span>
+                <button id="nextBtn" onclick="nextPage()" class="gradient-btn text-white px-6 py-2.5 rounded-xl font-medium shadow text-sm">
+                    다음 <i class="fa-solid fa-chevron-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div id="resultScreen" class="hidden space-y-6">
+            <!-- Header Result Card -->
+            <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-xl border-t-4 border-teal-500 text-center relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 text-slate-100 opacity-50 pointer-events-none">
+                    <i class="fa-solid fa-tooth text-9xl"></i>
+                </div>
+                
+                <span id="resultUserTag" class="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-800 text-xs font-semibold mb-2"></span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-1" id="resultTypeTitle">진단 중...</h2>
+                <p class="text-teal-600 font-semibold text-sm mb-4" id="resultTypeSubtitle"></p>
+                
+                <div class="inline-flex items-center justify-center p-4 bg-slate-50 rounded-2xl border border-slate-200 my-2">
+                    <div class="text-center px-4">
+                        <span class="block text-xs text-slate-500">종합 점수</span>
+                        <span id="totalScore" class="text-3xl font-black text-slate-800">0</span>
+                        <span class="text-xs text-slate-400">/ 150점</span>
+                    </div>
+                </div>
+
+                <p id="resultTypeDesc" class="text-slate-600 text-sm leading-relaxed max-w-2xl mx-auto mt-4 text-left sm:text-center"></p>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Radar Chart -->
+                <div class="glass-card rounded-2xl p-5 shadow-md">
+                    <h3 class="font-bold text-slate-800 text-sm mb-4 flex items-center">
+                        <i class="fa-solid fa-chart-pie text-teal-500 mr-2"></i> 5대 영역 벨런스 차트
+                    </h3>
+                    <div class="relative w-full h-64">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Domain Scores Breakdown -->
+                <div class="glass-card rounded-2xl p-5 shadow-md flex flex-col justify-between">
+                    <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center">
+                        <i class="fa-solid fa-list-check text-teal-500 mr-2"></i> 영역별 상세 점수
+                    </h3>
+                    <div id="domainBars" class="space-y-3 my-auto">
+                        <!-- JS populated bars -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Strategy Card -->
+            <div class="glass-card rounded-2xl p-6 shadow-md border-l-4 border-indigo-500">
+                <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center">
+                    <i class="fa-solid fa-lightbulb text-amber-500 mr-2"></i> 치위생과 1학년 맞춤 성장 가이드
+                </h3>
+                <div id="strategyContent" class="space-y-3 text-sm text-slate-600 leading-relaxed">
+                    <!-- JS populated -->
+                </div>
+            </div>
+
+            <!-- Domain-specific Advice -->
+            <div class="glass-card rounded-2xl p-6 shadow-md">
+                <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center">
+                    <i class="fa-solid fa-compass text-teal-500 mr-2"></i> 세부 영역별 솔루션
+                </h3>
+                <div id="domainSolutions" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <!-- JS populated -->
+                </div>
+            </div>
+
+            <!-- Bottom Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center gap-3 pt-4">
+                <button onclick="window.print()" class="px-6 py-3 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-100 text-sm flex items-center justify-center">
+                    <i class="fa-solid fa-print mr-2"></i> 결과 인쇄 / PDF 저장
+                </button>
+                <button onclick="restartTest()" class="gradient-btn text-white font-medium px-6 py-3 rounded-xl text-sm flex items-center justify-center">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> 다시 테스트하기
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        <p>© 치위생과 대학생 학습 동기 진단 프로젝트 | Designed for Hygiene Freshmen</p>
+    </footer>
+
+    <script>
+        // Questions Data Structure
+        const questions = [
+            // 1. 내재적 동기 (1-6)
+            { id: 1, domain: 0, domainName: "내재적 동기", text: "치과위생학 전공 수업을 들을 때 새로운 지식을 알게 되는 것 자체가 재미있다." },
+            { id: 2, domain: 0, domainName: "내재적 동기", text: "구강 구조나 치과 질환의 원리 등 관심 있는 주제는 수업 외에도 스스로 검색해 본다." },
+            { id: 3, domain: 0, domainName: "내재적 동기", text: "시험이나 과제가 없더라도 전공 관련 책이나 영상 콘텐츠를 찾아보는 편이다." },
+            { id: 4, domain: 0, domainName: "내재적 동기", text: "배운 내용을 실제 나의 구강 관리나 주변 사람들의 사례에 적용해 보는 것이 흥미롭다." },
+            { id: 5, domain: 0, domainName: "내재적 동기", text: "전공 수업 시간에 질문이 생기면 그냥 넘기지 않고 해답을 찾고 싶다." },
+            { id: 6, domain: 0, domainName: "내재적 동기", text: "어렵고 복잡한 전공 개념을 마침내 이해했을 때 큰 성취감을 느낀다." },
+
+            // 2. 외재적 동기 (7-12)
+            { id: 7, domain: 1, domainName: "외재적 동기", text: "치과위생사 국가고시 합격이라는 분명한 목표가 나의 공부 동기가 된다." },
+            { id: 8, domain: 1, domainName: "외재적 동기", text: "원하는 치과병원이나 기관에 취업하겠다는 생각이 공부에 몰입하게 만든다." },
+            { id: 9, domain: 1, domainName: "외재적 동기", text: "좋은 학점(GPA)을 받거나 장학금을 타는 것이 나에게 중요한 보상이다." },
+            { id: 10, domain: 1, domainName: "외재적 동기", text: "미래에 전문적인 역량을 갖춘 치과위생사로 일할 나의 모습이 기대된다." },
+            { id: 11, domain: 1, domainName: "외재적 동기", text: "주변 사람(부모님, 교수님, 친구)에게 인정받고 싶은 마음이 공부에 자극이 된다." },
+            { id: 12, domain: 1, domainName: "외재적 동기", text: "대학 졸업 후 안정적이고 전문적인 커리어를 쌓기 위해 지금의 공부가 필수적이라고 생각한다." },
+
+            // 3. 자기효능감 (13-18)
+            { id: 13, domain: 2, domainName: "자기효능감", text: "의학 용어나 생물학 등 전공 공부가 어렵더라도 '노력하면 해낼 수 있다'고 믿는다." },
+            { id: 14, domain: 2, domainName: "자기효능감", text: "새로운 공부법이나 효율적인 암기 방식을 시도해 볼 자신이 있다." },
+            { id: 15, domain: 2, domainName: "자기효능감", text: "다른 학생들에 비해 전공 내용을 충분히 잘 이해하고 따라갈 수 있다고 생각한다." },
+            { id: 16, domain: 2, domainName: "자기효능감", text: "실습이나 과제 중 실수를 하더라도 이를 극복하고 더 잘할 수 있는 능력이 내게 있다." },
+            { id: 17, domain: 2, domainName: "자기효능감", text: "시험 범위가 많거나 부담스러워도 계획을 세워 차근차근 해결할 수 있다." },
+            { id: 18, domain: 2, domainName: "자기효능감", text: "나는 노력한 만큼 성과를 낼 수 있는 사람이라고 생각한다." },
+
+            // 4. 자기조절 및 학습 전략 (19-24)
+            { id: 19, domain: 3, domainName: "학습 전략", text: "매주 수업 복습과 과제 제출을 위한 나만의 일정을 계획해서 지킨다." },
+            { id: 20, domain: 3, domainName: "학습 전략", text: "전공 암기량이 많을 때 구조화(요약 노트, 마인드맵 등)해서 정리하는 편이다." },
+            { id: 21, domain: 3, domainName: "학습 전략", text: "공부에 방해되는 요소(스마트폰, 숏폼 등)를 스스로 제어하려고 노력한다." },
+            { id: 22, domain: 3, domainName: "학습 전략", text: "이해가 잘 안 되는 부분은 교수님께 질문하거나 스터디 그룹을 만들어 해결한다." },
+            { id: 23, domain: 3, domainName: "학습 전략", text: "시험 기간이 임박해서 벼락치기를 하기보다 미리 분량을 나누어 공부한다." },
+            { id: 24, domain: 3, domainName: "학습 전략", text: "나의 공부 방법이 효과적인지 주기적으로 돌아보고 수정한다." },
+
+            // 5. 회복탄력성 및 대학 적응 (25-30)
+            { id: 25, domain: 4, domainName: "회복탄력성", text: "성적이 생각보다 안 나오거나 과제가 힘들어도 포기하지 않고 다음 계획을 세운다." },
+            { id: 26, domain: 4, domainName: "회복탄력성", text: "대학 생활이나 전공에 대해 고민이 생길 때 조언을 구할 선배나 동기, 교수가 있다." },
+            { id: 27, domain: 4, domainName: "회복탄력성", text: "공부하다가 지칠 때 나만의 스트레스 해소법으로 마음을 다스릴 수 있다." },
+            { id: 28, domain: 4, domainName: "회복탄력성", text: "고등학교 공부와 달라진 대학 공부 방식에 적응하기 위해 적극적으로 노력하고 있다." },
+            { id: 29, domain: 4, domainName: "회복탄력성", text: "일시적인 슬럼프가 오더라도 금방 털어내고 다시 공부에 집중할 수 있다." },
+            { id: 30, domain: 4, domainName: "회복탄력성", text: "치위생과에 입학한 현재 나의 선택에 만족하며, 즐겁게 학교에 다니고 있다." }
+        ];
+
+        const domainNames = ["내재적 동기", "외재적 동기", "자기효능감", "학습 전략", "회복탄력성"];
+        const answers = new Array(30).fill(0);
+        let currentPage = 0; // 0 ~ 5 (Each page has 5 questions)
+        const questionsPerPage = 5;
+        let radarChartInstance = null;
+
+        function startTest() {
+            document.getElementById('introScreen').classList.add('hidden');
+            document.getElementById('testScreen').classList.remove('hidden');
+            document.getElementById('headerProgress').classList.remove('hidden');
+            renderPage();
+        }
+
+        function renderPage() {
+            const container = document.getElementById('questionContainer');
+            container.innerHTML = '';
+
+            const startIdx = currentPage * questionsPerPage;
+            const endIdx = startIdx + questionsPerPage;
+            const pageQuestions = questions.slice(startIdx, endIdx);
+
+            pageQuestions.forEach((q, idx) => {
+                const qNum = startIdx + idx + 1;
+                const currentAns = answers[qNum - 1];
+
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-2xl p-5 shadow-sm space-y-4 border border-slate-200";
+
+                card.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-teal-100 text-teal-800 font-bold text-xs shrink-0 mt-0.5">${qNum}</span>
+                        <div>
+                            <span class="text-xs font-medium text-teal-600 block mb-0.5">[${q.domainName}]</span>
+                            <p class="text-slate-800 font-medium text-sm leading-relaxed">${q.text}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-5 gap-1.5 pt-2">
+                        ${[1, 2, 3, 4, 5].map(val => `
+                            <button onclick="selectAnswer(${qNum - 1}, ${val})" 
+                                class="radio-option py-2 px-1 rounded-xl border text-center transition-all ${currentAns === val ? 'selected' : 'border-slate-200 text-slate-600 bg-white'}">
+                                <span class="block text-xs font-bold">${val}점</span>
+                                <span class="block text-[10px] text-slate-400 mt-0.5">${getScoreLabel(val)}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Update Page info
+            document.getElementById('pageIndicator').innerText = `${currentPage + 1} / 6 페이지`;
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            
+            if (currentPage === 5) {
+                document.getElementById('nextBtn').innerHTML = `결과 보기 <i class="fa-solid fa-check ml-2"></i>`;
+            } else {
+                document.getElementById('nextBtn').innerHTML = `다음 <i class="fa-solid fa-chevron-right ml-2"></i>`;
+            }
+
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function getScoreLabel(val) {
+            switch(val) {
+                case 1: return "전혀 아니다";
+                case 2: return "약간 아니다";
+                case 3: return "보통이다";
+                case 4: return "대체로 그렇다";
+                case 5: return "매우 그렇다";
+            }
+        }
+
+        function selectAnswer(qIndex, val) {
+            answers[qIndex] = val;
+            renderPage();
+        }
+
+        function updateProgress() {
+            const answeredCount = answers.filter(a => a > 0).length;
+            const percentage = Math.round((answeredCount / 30) * 100);
+            document.getElementById('progressText').innerText = `${percentage}%`;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+        }
+
+        function nextPage() {
+            // Check if all questions on current page are answered
+            const startIdx = currentPage * questionsPerPage;
+            for (let i = startIdx; i < startIdx + questionsPerPage; i++) {
+                if (answers[i] === 0) {
+                    alert(`${i + 1}번 문항에 답변해 주세요!`);
+                    return;
+                }
+            }
+
+            if (currentPage < 5) {
+                currentPage++;
+                renderPage();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                renderPage();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('testScreen').classList.add('hidden');
+            document.getElementById('headerProgress').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+
+            const userName = document.getElementById('userName').value.trim() || '학생';
+            document.getElementById('resultUserTag').innerText = `${userName} 님의 진단 결과 리포트`;
+
+            // Calculate domain scores
+            const domainScores = [0, 0, 0, 0, 0];
+            answers.forEach((ans, idx) => {
+                const domainIdx = questions[idx].domain;
+                domainScores[domainIdx] += ans;
+            });
+
+            const totalScore = domainScores.reduce((a, b) => a + b, 0);
+            document.getElementById('totalScore').innerText = totalScore;
+
+            // Type Determination
+            let typeTitle = "", typeSubtitle = "", typeDesc = "", strategyHtml = "";
+
+            if (totalScore >= 126) {
+                typeTitle = "🟢 Type A. 완벽 몰입형 (High-Flying Master)";
+                typeSubtitle = "전공에 대한 확신과 나만의 공부 루틴을 완벽히 갖춘 준비된 치과위생사";
+                typeDesc = "전공에 대한 높은 흥미와 명확한 미래 목표, 확실한 공부 습관을 고루 갖춘 상태입니다. 대학 공부와 실습에 뛰어난 적응력을 보이고 있으며, 국가고시 및 임상 현장에서도 우수한 성과가 기대됩니다.";
+                strategyHtml = `
+                    <p>• <b>시야 확장하기:</b> 전공 필수 과목을 넘어 최신 치과 임상 트렌드, 치과 재료학 심화, 학회 참여 등을 살펴볼 시기입니다.</p>
+                    <p>• <b>글로벌 & 커리어 비전:</b> 해외 치과위생사 자격, 병원 경영/행정, 연구직 등 다양한 치위생 분야의 커리어 로드맵을 그려보세요.</p>
+                    <p>• <b>동기 리더십:</b> 주변 스터디 그룹을 이끌거나 힘들어하는 동기들에게 멘토 역할을 해주며 함께 성장해 보세요.</p>
+                `;
+            } else if (totalScore >= 101) {
+                typeTitle = "🔵 Type B. 목표 집중형 (Strategic Achiever)";
+                typeSubtitle = "국가고시와 취업이라는 명확한 겨냥점을 두고 달려가는 실전형 학습자";
+                typeDesc = "치과위생사라는 목표와 국가고시 합격, 학점 관리에 대한 의지가 강합니다. 결과 중심의 몰입도가 높지만, 암기량이 갑자기 많아지거나 시험 부담이 커질 때 스트레스를 받을 수 있습니다.";
+                strategyHtml = `
+                    <p>• <b>직업적 보람 채우기:</b> '시험 점수'에만 너무 치중하면 지칠 수 있습니다. 배운 지식이 '미래 내 환자의 구강 건강을 지킨다'는 가치를 매일 떠올려 보세요.</p>
+                    <p>• <b>과정의 즐거움 느끼기:</b> 성과 외에도 소소하게 배움 그 자체의 즐거움(내재적 동기)을 다지는 질문 중심 학습법을 시도해보세요.</p>
+                    <p>• <b>페이스 조절:</b> 시험 기간 직전 무리하기보다 평소 꾸준한 분량 배분으로 마인드 컨트롤을 해나가는 것이 중요합니다.</p>
+                `;
+            } else if (totalScore >= 76) {
+                typeTitle = "🟡 Type C. 잠재 성장형 (Unpolished Diamond)";
+                typeSubtitle = "방향과 방법만 잡히면 언제든 폭발적으로 성장할 원석";
+                typeDesc = "잘하고 싶은 의지와 열정은 크지만, 고교 시절과 달라진 대학 공부 방식(의학 용어, 방대한 암기량, 실습 등)에 적응 중입니다. 공부 방법이나 시간 관리에 노하우를 얻으면 빠르게 점프할 수 있습니다.";
+                strategyHtml = `
+                    <p>• <b>작은 성공(Small Wins) 경험 쌓기:</b> 거창한 목표 대신 '오늘 전공 용어 15개 완벽 암기' 같은 소소한 목표를 달성하며 자신감을 회복하세요.</p>
+                    <p>• <b>대학 공부법 구조화:</b> 핵심 요약 노트 작성법, 마인드맵 정리, 25분 공부/5분 휴식(포모도로) 등 나만의 학습 루틴을 정립하세요.</p>
+                    <p>• <b>동기 스터디 활용:</b> 이해가 안 되는 부분은 혼자 끙끙대지 말고 친구들과 묻고 답하는 스터디 그룹을 활용하세요.</p>
+                `;
+            } else {
+                typeTitle = "🔴 Type D. 재충전 필요형 (Battery Recharge Needed)";
+                typeSubtitle = "전공에 대한 고민과 슬럼프로 잠시 학습 에너지가 방전된 상태";
+                typeDesc = "전공 학문과의 적합성 고민이나 학업 스트레스로 인해 학습 동기와 자신감이 잠시 하락한 시기입니다. 자책하기보다 마음의 재충전과 나만의 동기 스위치를 찾는 것이 우선입니다.";
+                strategyHtml = `
+                    <p>• <b>부담 줄이고 가볍게 시작하기:</b> 매일 10분만 전공 책을 읽거나 유용한 치과 임상 유튜브 영상을 보는 것부터 가볍게 시작하세요.</p>
+                    <p>• <b>멘토링 상담 신청:</b> 교수님, 선배, 상담센터를 활용해 현재 겪는 학업 고민을 솔직하게 나누어 보세요.</p>
+                    <p>• <b>나만의 힐링 루틴:</b> 학업 외의 스트레스 해소 요소를 확보하여 멘탈 상태를 안정시키는 것이 우선입니다.</p>
+                `;
+            }
+
+            document.getElementById('resultTypeTitle').innerText = typeTitle;
+            document.getElementById('resultTypeSubtitle').innerText = typeSubtitle;
+            document.getElementById('resultTypeDesc').innerText = typeDesc;
+            document.getElementById('strategyContent').innerHTML = strategyHtml;
+
+            // Domain Bars rendering
+            const domainBarsContainer = document.getElementById('domainBars');
+            domainBarsContainer.innerHTML = '';
+            domainNames.forEach((name, idx) => {
+                const score = domainScores[idx];
+                const pct = Math.round((score / 30) * 100);
+                domainBarsContainer.innerHTML += `
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold mb-1">
+                            <span class="text-slate-700">${name}</span>
+                            <span class="text-teal-600">${score}점 / 30점</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                            <div class="bg-teal-500 h-2.5 rounded-full" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Domain Solutions rendering
+            const solutionsContainer = document.getElementById('domainSolutions');
+            solutionsContainer.innerHTML = '';
+            const domainTips = [
+                { title: "내재적 동기", tip: "임상 현장 사례/영상을 보며 치위생학의 실제적 가치를 체감해보세요." },
+                { title: "외재적 동기", tip: "학년별 로드맵과 국가고시 목표 D-day를 설정해 비전을 시각화하세요." },
+                { title: "자기효능감", tip: "쉬운 문제부터 풀며 '나도 할 수 있다'는 긍정 선언을 매일 실천하세요." },
+                { title: "학습 전략", tip: "주간 플래너 작성 및 핵심 개념 요약노트 작성 습관을 길러보세요." },
+                { title: "회복탄력성", tip: "선배/동기 네트워크를 형성하고 규칙적인 운동으로 체력을 기르세요." }
+            ];
+
+            domainScores.forEach((score, idx) => {
+                const isLow = score <= 18;
+                solutionsContainer.innerHTML += `
+                    <div class="p-3 rounded-xl ${isLow ? 'bg-amber-50 border border-amber-200' : 'bg-slate-50 border border-slate-100'}">
+                        <div class="font-bold ${isLow ? 'text-amber-800' : 'text-slate-800'} mb-1 flex items-center">
+                            <i class="fa-solid ${isLow ? 'fa-triangle-exclamation text-amber-500' : 'fa-circle-check text-teal-500'} mr-1.5"></i>
+                            ${domainTips[idx].title} (${score}점)
+                        </div>
+                        <p class="text-slate-600 leading-tight">${domainTips[idx].tip}</p>
+                    </div>
+                `;
+            });
+
+            // Render Chart
+            renderRadarChart(domainScores);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderRadarChart(scores) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            if (radarChartInstance) {
+                radarChartInstance.destroy();
+            }
+
+            radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: domainNames,
+                    datasets: [{
+                        label: '나의 점수 (30점 만점)',
+                        data: scores,
+                        backgroundColor: 'rgba(13, 148, 136, 0.2)',
+                        borderColor: '#0d9488',
+                        pointBackgroundColor: '#0284c7',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#0284c7',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 30,
+                            ticks: {
+                                stepSize: 6,
+                                backdropColor: 'transparent',
+                                font: { size: 10 }
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 11,
+                                    weight: 'bold'
+                                },
+                                color: '#334155'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function restartTest() {
+            answers.fill(0);
+            currentPage = 0;
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('introScreen').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
